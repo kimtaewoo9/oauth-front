@@ -13,7 +13,7 @@
         
         <v-container class="login-container">
             <v-row justify="center" align="center" style="min-height: 100vh;">
-                <v-col cols="12" sm="8" md="6" lg="5" xl="4">
+                <v-col cols="12" sm="10" md="8" lg="7" xl="6">
                     <v-card class="glass-card">
                         <v-card-text class="pa-6">
                             <h1 class="login-title">WELCOME</h1>
@@ -57,18 +57,50 @@
                                 <div class="social-buttons-container">
                                     <div class="social-btn google-btn" @click="googleLogin()">
                                         <img
+                                            v-if="hasGoogleImage"
                                             src="@/assets/google_login.png"
                                             alt="Google Login"
                                             class="social-img"
+                                            @error="hasGoogleImage = false"
                                         />
+                                        <div v-else class="google-text">
+                                            <span>G</span> Google 로그인
+                                        </div>
                                         <div class="social-hover"></div>
                                     </div>
                                     <div class="social-btn kakao-btn" @click="kakaoLogin()">
                                         <img
+                                            v-if="hasKakaoImage"
                                             src="@/assets/kakao_login.png"
                                             alt="Kakao Login"
                                             class="social-img"
+                                            @error="hasKakaoImage = false"
                                         />
+                                        <div v-else class="kakao-text">
+                                            <span>K</span> 카카오 로그인
+                                        </div>
+                                        <div class="social-hover"></div>
+                                    </div>
+                                    <div class="social-btn naver-btn" @click="naverLogin()">
+                                        <img
+                                            v-if="hasNaverImage"
+                                            src="@/assets/naver_login.png"
+                                            alt="Naver Login"
+                                            class="social-img"
+                                            @error="hasNaverImage = false"
+                                        />
+                                        <div v-else class="naver-text">
+                                            <span>N</span> 네이버 로그인
+                                        </div>
+                                        <div class="social-hover"></div>
+                                    </div>
+                                    <div class="social-btn github-btn" @click="githubLogin()">
+                                        <div class="github-content">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="github-icon">
+                                                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                            </svg>
+                                            <span>GitHub 로그인</span>
+                                        </div>
                                         <div class="social-hover"></div>
                                     </div>
                                 </div>
@@ -84,21 +116,40 @@
 <script>
 import axios from 'axios';
 
+function generateState() {
+    const array = new Uint32Array(1);
+    window.crypto.getRandomValues(array);
+    return array.toString();
+}
+
 export default {
     data() {
         return {
             email: "",
             password: "",
             loading: false,
+            hasNaverImage: true,
+            hasGoogleImage: true,
+            hasKakaoImage: true,
             // google
             googleUrl: "https://accounts.google.com/o/oauth2/auth",
-            googleClientId: "495083622583-2fs7mjn5bi85ihp1ge7euogfumd3610m.apps.googleusercontent.com",
+            // client-id 같은 것을 프론트엔드 코드에서 가지고 있을 수 밖에 없음 .. -> 단점 . 근데 요청의 출발지와 어디로 redirect 할지를 구글 클라우드 콘솔에서 다 지정을 하기 때문에 사실 괜찮음 .
+            googleClientId: process.env.VUE_APP_GOOGLE_CLIENT_ID || "495083622583-2fs7mjn5bi85ihp1ge7euogfumd3610m.apps.googleusercontent.com",
             googleRedirectUrl: "http://localhost:3000/oauth/google/redirect",
             googleScope: "openid email profile",
             // kakao
             kakaoUrl: "https://kauth.kakao.com/oauth/authorize",
-            kakaoClientId: "dc2b1c572cf4112ab3ec7d95dde0b5c7",
+            kakaoClientId: process.env.VUE_APP_KAKAO_CLIENT_ID || "dc2b1c572cf4112ab3ec7d95dde0b5c7",
             kakaoRedirectUrl: "http://localhost:3000/oauth/kakao/redirect",
+            // naver
+            naverUrl: "https://nid.naver.com/oauth2.0/authorize", // 네이버 로그인 인증 요청 URL
+            naverClientId: process.env.VUE_APP_NAVER_CLIENT_ID || "dfETyOv2dxCwKjl08gw4",
+            naverRedirectionUrl: "http://localhost:3000/oauth/naver/redirect",
+            // github
+            githubUrl: "https://github.com/login/oauth/authorize",
+            githubClientId: "Ov23liJJzBKWmp6tL30f",
+            githubRedirectUrl: "http://localhost:3000/oauth/github/redirect",
+            githubScope: "read:user user:email"
         }
     },
     methods: {
@@ -127,6 +178,21 @@ export default {
         kakaoLogin() {
             const auth_uri = `${this.kakaoUrl}?client_id=${this.kakaoClientId}&redirect_uri=${this.kakaoRedirectUrl}&response_type=code`;
             window.location.href = auth_uri; // 사용자의 브라우저를 카카오 로그인 페이지로 이동시킴.
+        },
+        naverLogin(){
+            const state = generateState();
+            sessionStorage.setItem('naver_state', state);
+
+            const auth_uri = `${this.naverUrl}?response_type=code&client_id=${this.naverClientId}&redirect_uri=${this.naverRedirectionUrl}&state=${state}`;
+            window.location.href = auth_uri
+        },
+        githubLogin(){
+            const state = generateState();
+            sessionStorage.setItem('github_state', state);
+            const encodedState = encodeURIComponent(state);
+            const auth_uri = `${this.githubUrl}?client_id=${this.githubClientId}&redirect_uri=${this.githubRedirectUrl}&scope=${this.githubScope}&state=${encodedState}`;
+            
+            window.location.href = auth_uri;
         },
         googleServerLogin() {
             window.location.href = "http://localhost:8080/oauth2/authorization/google";
@@ -404,10 +470,11 @@ export default {
 }
 
 .social-buttons-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 340px;
+    margin: 0 auto;
 }
 
 .social-btn {
@@ -417,7 +484,7 @@ export default {
     border-radius: 12px;
     transition: all 0.3s ease;
     display: inline-block;
-    width: 180px;
+    width: 100%;
     height: 50px;
     display: flex;
     align-items: center;
@@ -456,6 +523,14 @@ export default {
     background: linear-gradient(135deg, rgba(255, 235, 0, 0.4), rgba(255, 200, 0, 0.4));
 }
 
+.naver-btn .social-hover {
+    background: linear-gradient(135deg, rgba(3, 199, 90, 0.4), rgba(0, 160, 70, 0.4));
+}
+
+.github-btn .social-hover {
+    background: linear-gradient(135deg, rgba(36, 41, 46, 0.4), rgba(16, 21, 26, 0.4));
+}
+
 .social-btn:hover .social-hover {
     transform: scale(1);
 }
@@ -468,6 +543,106 @@ export default {
 
 .social-btn:hover .social-img {
     transform: scale(1.1);
+}
+
+/* Text styles for social buttons when images are not available */
+.google-text, .kakao-text, .naver-text {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+    position: relative;
+    white-space: nowrap;
+}
+
+.google-text span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4285F4, #EA4335);
+    color: white;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.kakao-text span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: #FEE500;
+    color: #3C1E1E;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.naver-text span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    background: #03C75A;
+    color: white;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+/* GitHub button styles */
+.github-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 2;
+    position: relative;
+    white-space: nowrap;
+}
+
+.github-icon {
+    width: 24px;
+    height: 24px;
+    fill: white;
+    transition: all 0.3s ease;
+}
+
+.github-btn:hover .github-icon {
+    transform: scale(1.1) rotate(360deg);
+    transition: transform 0.6s ease;
+}
+
+.github-btn {
+    position: relative;
+}
+
+.github-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: all 0.6s ease;
+}
+
+.github-btn:hover::after {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
 }
 
 /* Geometric shapes */
@@ -529,6 +704,13 @@ export default {
 }
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+    .social-buttons-container {
+        gap: 10px;
+        max-width: 320px;
+    }
+}
+
 @media (max-width: 960px) {
     .login-title {
         font-size: 2rem;
@@ -539,12 +721,7 @@ export default {
     }
     
     .social-buttons-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .social-btn {
-        width: 100%;
+        grid-template-columns: 1fr;
         max-width: 220px;
     }
 }
@@ -563,9 +740,23 @@ export default {
     }
     
     .social-btn {
-        width: 100%;
-        max-width: 180px;
         height: 45px;
+    }
+    
+    .github-content span,
+    .google-text,
+    .kakao-text,
+    .naver-text {
+        font-size: 0.85rem;
+    }
+    
+    .github-content {
+        gap: 6px;
+    }
+    
+    .github-icon {
+        width: 20px;
+        height: 20px;
     }
     
     .glass-card .v-card__text {
