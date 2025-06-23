@@ -9,9 +9,8 @@ import axios from 'axios';
 
 export default{
     created(){
-        const code = new URL(window.location.href).searchParams.get("code");
-        console.log(code);
-        this.sendCodeToServer(code);
+        const code = new URL(window.location.href).searchParams.get("code"); 
+        this.sendCodeToServer(code); // 백엔드에서 인가코드 넘겨주면 받아서 server에 보냄
     },
     methods:{
         async sendCodeToServer(code){
