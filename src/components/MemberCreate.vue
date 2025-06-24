@@ -13,18 +13,18 @@
         
         <v-container class="signup-container">
             <v-row justify="center" align="center" style="min-height: 100vh;">
-                <v-col cols="12" sm="8" md="6" lg="5" xl="4">
+                <v-col cols="12" sm="10" md="7" lg="6" xl="5">
                     <v-card class="glass-card">
-                        <v-card-text class="pa-6">
+                        <v-card-text class="card-content">
                             <h1 class="signup-title">JOIN US</h1>
                             <p class="subtitle">새로운 시작</p>
                             
-                            <v-form @submit.prevent="memberCreate">
+                            <v-form @submit.prevent="memberCreate" class="signup-form">
                                 <v-text-field
                                     label="Email"
                                     v-model="email"
                                     prepend-icon="mdi-email-outline"
-                                    class="custom-input mb-3"
+                                    class="custom-input"
                                     outlined
                                     dense
                                     dark
@@ -36,7 +36,7 @@
                                     v-model="password"
                                     type="password"
                                     prepend-icon="mdi-lock-outline"
-                                    class="custom-input mb-2"
+                                    class="custom-input"
                                     outlined
                                     dense
                                     dark
@@ -48,7 +48,7 @@
                                     v-model="confirmPassword"
                                     type="password"
                                     prepend-icon="mdi-lock-check-outline"
-                                    class="custom-input mb-2"
+                                    class="custom-input"
                                     outlined
                                     dense
                                     dark
@@ -156,8 +156,8 @@ export default {
 .signup-container {
     position: relative;
     z-index: 100;
-    padding-top: 40px;
-    padding-bottom: 20px;
+    padding: 24px;
+    width: 100%;
 }
 
 /* Animated gradient background */
@@ -216,19 +216,21 @@ export default {
     }
 }
 
-/* Glassmorphism card */
+/* Glassmorphism card - 황금비율 적용 */
 .glass-card {
     background: rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 25px !important;
+    border-radius: 20px !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    overflow: visible;
+    overflow: hidden;
     position: relative;
     transform: translateY(0);
     transition: all 0.3s ease;
-    margin: 20px;
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .glass-card::before {
@@ -240,7 +242,7 @@ export default {
     bottom: -2px;
     background: linear-gradient(45deg, #ff0066, #6600ff, #00ff88, #ffaa00, #ff0066);
     background-size: 300% 300%;
-    border-radius: 25px;
+    border-radius: 20px;
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -253,7 +255,7 @@ export default {
 }
 
 .glass-card:hover {
-    transform: translateY(-3px) scale(1.01);
+    transform: translateY(-2px) scale(1.01);
     box-shadow: 0 12px 35px 0 rgba(31, 38, 135, 0.5);
 }
 
@@ -263,13 +265,18 @@ export default {
     100% { background-position: 0% 50%; }
 }
 
-/* Title styles */
+/* Card content - 균형잡힌 패딩 */
+.card-content {
+    padding: 40px 40px 32px !important;
+}
+
+/* Title styles - 적절한 크기 조정 */
 .signup-title {
     color: white;
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     font-weight: 800;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
     animation: pulseText 2s ease-in-out infinite;
     letter-spacing: 3px;
@@ -285,24 +292,37 @@ export default {
         text-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
     }
     50% { 
-        transform: scale(1.05);
-        text-shadow: 0 0 60px rgba(255, 255, 255, 1);
+        transform: scale(1.02);
+        text-shadow: 0 0 50px rgba(255, 255, 255, 1);
     }
 }
 
 .subtitle {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.85);
     text-align: center;
-    margin-bottom: 25px;
-    font-size: 1rem;
+    margin-bottom: 32px;
+    font-size: 0.95rem;
     font-weight: 300;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
-/* Custom input styles */
+/* Form spacing */
+.signup-form {
+    margin: 0;
+}
+
+/* Custom input styles - 균일한 높이와 간격 */
+.custom-input {
+    margin-bottom: 20px !important;
+}
+
+.custom-input:last-of-type {
+    margin-bottom: 28px !important;
+}
+
 .custom-input >>> .v-input__control {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
     overflow: hidden;
 }
 
@@ -311,8 +331,10 @@ export default {
 }
 
 .custom-input >>> .v-input__slot {
-    padding: 0 18px !important;
-    min-height: 45px !important;
+    padding: 0 20px !important;
+    min-height: 52px !important;
+    display: flex;
+    align-items: center;
 }
 
 .custom-input >>> .v-input__slot::before {
@@ -325,33 +347,36 @@ export default {
 
 .custom-input >>> .v-label {
     color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 15px !important;
 }
 
 .custom-input >>> input {
     color: white !important;
-    font-size: 16px;
+    font-size: 15px;
+    padding: 8px 0;
 }
 
 .custom-input >>> .v-icon {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin-right: 12px;
 }
 
-/* Signup button */
+/* Signup button - 균형잡힌 크기 */
 .signup-btn {
-    margin-top: 20px !important;
-    height: 48px !important;
+    margin-top: 4px !important;
+    height: 52px !important;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) !important;
     background-size: 200% 200%;
     animation: buttonGradient 4s ease infinite;
     border: none !important;
-    border-radius: 25px !important;
+    border-radius: 14px !important;
     font-weight: 600;
-    font-size: 1.1rem !important;
-    letter-spacing: 1px;
+    font-size: 1rem !important;
+    letter-spacing: 0.5px;
     text-transform: none !important;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 5px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.35);
 }
 
 .signup-btn::before {
@@ -361,7 +386,7 @@ export default {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
     transition: left 0.5s ease;
 }
 
@@ -370,8 +395,8 @@ export default {
 }
 
 .signup-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 35px rgba(102, 126, 234, 0.6) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 28px rgba(102, 126, 234, 0.5) !important;
 }
 
 .btn-text {
@@ -385,15 +410,16 @@ export default {
     100% { background-position: 0% 50%; }
 }
 
-/* Login link */
+/* Login link - 적절한 간격 */
 .login-link {
-    margin-top: 30px;
+    margin-top: 28px;
     text-align: center;
 }
 
 .link-text {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.875rem;
+    margin: 0;
 }
 
 .link {
@@ -420,13 +446,13 @@ export default {
 }
 
 .link:hover {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
 /* Geometric shapes */
 .shape {
     position: absolute;
-    opacity: 0.1;
+    opacity: 0.08;
     z-index: 3;
 }
 
@@ -473,40 +499,70 @@ export default {
 @keyframes pulse {
     0%, 100% { 
         transform: scale(1); 
-        opacity: 0.1;
+        opacity: 0.08;
     }
     50% { 
-        transform: scale(1.3); 
-        opacity: 0.3;
+        transform: scale(1.2); 
+        opacity: 0.15;
     }
 }
 
 /* Responsive adjustments */
 @media (max-width: 960px) {
+    .card-content {
+        padding: 36px 32px 28px !important;
+    }
+    
     .signup-title {
         font-size: 2rem;
     }
     
     .glass-card {
-        margin: 15px;
+        max-width: 400px;
     }
 }
 
 @media (max-width: 600px) {
     .signup-container {
-        padding: 15px 10px;
+        padding: 16px;
+    }
+    
+    .card-content {
+        padding: 32px 24px 24px !important;
     }
     
     .signup-title {
-        font-size: 1.8rem;
+        font-size: 1.75rem;
+        letter-spacing: 2px;
     }
     
     .subtitle {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
+        margin-bottom: 24px;
     }
     
-    .glass-card .v-card__text {
-        padding: 24px !important;
+    .custom-input >>> .v-input__slot {
+        min-height: 48px !important;
+    }
+    
+    .signup-btn {
+        height: 48px !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .glass-card {
+        max-width: 100%;
+    }
+}
+
+/* 아주 작은 화면 */
+@media (max-width: 360px) {
+    .card-content {
+        padding: 28px 20px 20px !important;
+    }
+    
+    .signup-title {
+        font-size: 1.5rem;
     }
 }
 </style>
